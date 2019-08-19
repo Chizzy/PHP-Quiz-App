@@ -15,34 +15,54 @@
  *
  */
 
+session_start();
+if (empty($page)) {
+    $page = 1;
+}
 
 // Include questions
 include 'questions.php';
+
 shuffle($questions);
 $total = count($questions);
+$page = filter_input(INPUT_GET, 'p', FILTER_SANITIZE_NUMBER_INT);
+
+if (!isset($_SESSION['question']) || $_SESSION['question'] > 8) {
+    $_SESSION['question'] = 0;
+} else {
+    $_SESSION['question']++;
+}
+
+if (isset($_POST['answer'])) {
+    $_SESSION['answer'][$page - 1] = filter_input(INPUT_POST, 'answer', FILTER_SANITIZE_NUMBER_INT);
+}
+
+if ($page > $total) {
+    exit;    
+}
 
 // Show random question
-foreach ($questions as $question) {
-    echo '<div id="quiz-box">';
-    echo '<p class="breadcrumbs">Question # of ' . $total . ' </p>';
-    echo '<p class="quiz">What is ' . $question['leftAdder'] . ' + ' . $question['rightAdder'] . '?</p>';
-    echo '<form action="quiz.php" method="post">';
-    echo '<input type="hidden" name="id" value="0" />';
-    $answer1 = '<input type="submit" class="btn" name="answer" value="' . $question['correctAnswer'] . '" />';
-    $answer2 = '<input type="submit" class="btn" name="answer" value="' . $question['firstIncorrectAnswer'] . '" />';
-    $answer3 = '<input type="submit" class="btn" name="answer" value="' . $question['secondIncorrectAnswer'] . '" />';
-    $answers = [$answer1, $answer2, $answer3];
-    shuffle($answers);
-    echo implode(' ', $answers);
-    echo '</form>';
-    echo '</div>';
-}
+echo '<div id="quiz-box">';
+// Show which question they are on
+echo '<p class="breadcrumbs">Question ' . $page . ' of ' . $total . ' </p>';
+echo '<p class="quiz">What is ' . $questions[$_SESSION['question']]['leftAdder'] . ' + ' . $questions[$_SESSION['question']]['rightAdder'] . '?</p>';
+echo '<form action="index.php?p=' . ($page + 1) . '" method="post">';
+echo '<input type="hidden" name="id" value="0" />';
+$answer1 = '<input type="submit" class="btn" name="answer" value="' . $questions[$_SESSION['question']]['correctAnswer'] . '" />';
+$answer2 = '<input type="submit" class="btn" name="answer" value="' . $questions[$_SESSION['question']]['firstIncorrectAnswer'] . '" />';
+$answer3 = '<input type="submit" class="btn" name="answer" value="' . $questions[$_SESSION['question']]['secondIncorrectAnswer'] . '" />';
+$answers = [$answer1, $answer2, $answer3];
+shuffle($answers);
+echo implode(' ', $answers);
+echo '</form>';
+echo '</div>';
+
 
 
 
 // Keep track of which questions have been asked
 
-// Show which question they are on
+
 // Shuffle answer buttons
 
 
