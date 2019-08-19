@@ -15,12 +15,34 @@
  *
  */
 
+
 // Include questions
+include 'questions.php';
+shuffle($questions);
+$total = count($questions);
+
+// Show random question
+foreach ($questions as $question) {
+    echo '<div id="quiz-box">';
+    echo '<p class="breadcrumbs">Question # of ' . $total . ' </p>';
+    echo '<p class="quiz">What is ' . $question['leftAdder'] . ' + ' . $question['rightAdder'] . '?</p>';
+    echo '<form action="quiz.php" method="post">';
+    echo '<input type="hidden" name="id" value="0" />';
+    $answer1 = '<input type="submit" class="btn" name="answer" value="' . $question['correctAnswer'] . '" />';
+    $answer2 = '<input type="submit" class="btn" name="answer" value="' . $question['firstIncorrectAnswer'] . '" />';
+    $answer3 = '<input type="submit" class="btn" name="answer" value="' . $question['secondIncorrectAnswer'] . '" />';
+    $answers = [$answer1, $answer2, $answer3];
+    shuffle($answers);
+    echo implode(' ', $answers);
+    echo '</form>';
+    echo '</div>';
+}
+
+
 
 // Keep track of which questions have been asked
 
 // Show which question they are on
-// Show random question
 // Shuffle answer buttons
 
 
