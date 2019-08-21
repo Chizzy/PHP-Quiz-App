@@ -29,18 +29,6 @@ if (empty($page)) {
 $total = count($questions);
 shuffle($questions);
 
-
-
-if (!isset($_SESSION['question']) || $_SESSION['question'] > 8) {
-    $_SESSION['question'] = 0;
-} else {
-    $_SESSION['question']++;
-}
-
-if (isset($_POST['answer'])) {
-    $_SESSION['answer'] = filter_input(INPUT_POST, 'answer', FILTER_SANITIZE_NUMBER_INT);
-}
-
 if ($page > $total) {
     exit;    
 }
@@ -49,29 +37,35 @@ if ($page > $total) {
 echo '<div id="quiz-box">';
 // Show which question they are on
 echo '<p class="breadcrumbs">Question ' . $page . ' of ' . $total . ' </p>';
-echo '<p class="quiz">What is ' . $questions[$_SESSION['question']]['leftAdder'] . ' + ' . $questions[$_SESSION['question']]['rightAdder'] . '?</p>';
+echo '<p class="quiz">What is ' . $questions[$page - 1]['leftAdder'] . ' + ' . $questions[$page - 1]['rightAdder'] . '?</p>';
 echo '<form action="index.php?p=' . ($page + 1) . '" method="post">';
 echo '<input type="hidden" name="id" value="0" />';
-$answer1 = '<input type="submit" class="btn" name="answer" value="' . $questions[$_SESSION['question']]['correctAnswer'] . '" />';
-$answer2 = '<input type="submit" class="btn" name="answer" value="' . $questions[$_SESSION['question']]['firstIncorrectAnswer'] . '" />';
-$answer3 = '<input type="submit" class="btn" name="answer" value="' . $questions[$_SESSION['question']]['secondIncorrectAnswer'] . '" />';
-$answers = [$answer1, $answer2, $answer3];
+// Shuffle answer buttons
+$answers = [
+    $questions[$page - 1]['correctAnswer'], 
+    $questions[$page - 1]['firstIncorrectAnswer'], 
+    $questions[$page - 1]['secondIncorrectAnswer']
+];
 shuffle($answers);
-echo implode(' ', $answers);
+echo '<input type="submit" class="btn" name="answer" value="' . $answers[0] . '" />';
+echo '<input type="submit" class="btn" name="answer" value="' . $answers[1] . '" />';
+echo '<input type="submit" class="btn" name="answer" value="' . $answers[2] . '" />';
 echo '</form>';
 echo '</div>';
 
-
-
-
 // Keep track of which questions have been asked
-
-
-// Shuffle answer buttons
+// Keep track of answers
+if (isset($_POST['answer'])) {
+    $_SESSION['answer'] = filter_input(INPUT_POST, 'answer', FILTER_SANITIZE_NUMBER_INT);
+    if ($_SESSION['answer'] == $questions[$page - 1]['correctAnswer']) {
+        echo '<h2>Correct</h2>';
+    } else {
+        echo '<h2>Incorrect, answer is ' . $questions[$page - 1]['correctAnswer'] . '</h2>';
+    }
+}
 
 
 // Toast correct and incorrect answers
-// Keep track of answers
 // If all questions have been asked, give option to show score
 // else give option to move to next question
 
