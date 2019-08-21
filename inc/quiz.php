@@ -16,16 +16,20 @@
  */
 
 session_start();
-if (empty($page)) {
-    $page = 1;
-}
+
 
 // Include questions
 include 'questions.php';
 
-shuffle($questions);
-$total = count($questions);
 $page = filter_input(INPUT_GET, 'p', FILTER_SANITIZE_NUMBER_INT);
+if (empty($page)) {
+    $page = 1;
+}
+
+$total = count($questions);
+shuffle($questions);
+
+
 
 if (!isset($_SESSION['question']) || $_SESSION['question'] > 8) {
     $_SESSION['question'] = 0;
@@ -34,7 +38,7 @@ if (!isset($_SESSION['question']) || $_SESSION['question'] > 8) {
 }
 
 if (isset($_POST['answer'])) {
-    $_SESSION['answer'][$page - 1] = filter_input(INPUT_POST, 'answer', FILTER_SANITIZE_NUMBER_INT);
+    $_SESSION['answer'] = filter_input(INPUT_POST, 'answer', FILTER_SANITIZE_NUMBER_INT);
 }
 
 if ($page > $total) {
