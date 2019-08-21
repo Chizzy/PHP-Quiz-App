@@ -27,7 +27,6 @@ if (empty($page)) {
 }
 
 $total = count($questions);
-shuffle($questions);
 
 if ($page > $total) {
     exit;    
@@ -57,15 +56,15 @@ echo '</div>';
 // Keep track of answers
 if (isset($_POST['answer'])) {
     $_SESSION['answer'] = filter_input(INPUT_POST, 'answer', FILTER_SANITIZE_NUMBER_INT);
-    if ($_SESSION['answer'] == $questions[$page - 1]['correctAnswer']) {
-        echo '<h2>Correct</h2>';
+    if ($_SESSION['answer'] == $questions[$page - 2]['correctAnswer']) {
+        // Toast correct and incorrect answers
+        echo '<h2>Correct, good job! 👍</h2>';
     } else {
-        echo '<h2>Incorrect, answer is ' . $questions[$page - 1]['correctAnswer'] . '</h2>';
+        echo '<h2>Incorrect, answer was ' . $questions[$page - 2]['correctAnswer'] . ' 🙁.</h2>';
     }
 }
 
 
-// Toast correct and incorrect answers
 // If all questions have been asked, give option to show score
 // else give option to move to next question
 
