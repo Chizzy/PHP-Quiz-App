@@ -16,22 +16,18 @@
  */
 
 session_start();
-
+$_SESSION['amountCorrect'] = 0;
 
 // Include questions
 include 'generate_questions.php';
+// var_dump($questions);
 
 $page = filter_input(INPUT_GET, 'p', FILTER_SANITIZE_NUMBER_INT);
 if (empty($page)) {
     session_destroy();
     $page = 1;
 }
-
 $total = count($questions);
-
-if ($page > $total) {
-    exit;    
-}
 
 // Show random question
 echo '<div id="quiz-box">';
@@ -39,7 +35,7 @@ echo '<div id="quiz-box">';
 echo '<p class="breadcrumbs">Question ' . $page . ' of ' . $total . ' </p>';
 echo '<p class="quiz">What is ' . $questions[$page - 1]['leftAdder'] . ' + ' . $questions[$page - 1]['rightAdder'] . '?</p>';
 echo '<form action="index.php?p=' . ($page + 1) . '" method="post">';
-echo '<input type="hidden" name="id" value="0" />';
+echo '<input type="hidden" name="correctAnswer" value="' . $questions[$page - 1]['correctAnswer'] . '" />';
 // Shuffle answer buttons
 $answers = [
     $questions[$page - 1]['correctAnswer'], 
@@ -55,13 +51,15 @@ echo '</div>';
 
 // Keep track of which questions have been asked
 // Keep track of answers
-if (isset($_POST['answer'])) {
+if (isset($_POST['answer']) && isset($_POST['correctAnswer'])) {
     $_SESSION['answer'] = filter_input(INPUT_POST, 'answer', FILTER_SANITIZE_NUMBER_INT);
-    if ($_SESSION['answer'] == $questions[$page - 2]['correctAnswer']) {
+    $_SESSION['correctAnswer'] = filter_input(INPUT_POST, 'correctAnswer', FILTER_SANITIZE_NUMBER_INT);
+    if ($_SESSION['answer'] == $_SESSION['correctAnswer']) {
         // Toast correct and incorrect answers
         echo '<h2>Correct, good job! 👍</h2>';
+        $_SESSION['amountCorrect']++;
     } else {
-        echo '<h2>Incorrect, answer was ' . $questions[$page - 2]['correctAnswer'] . ' 🙁.</h2>';
+        echo '<h2>Incorrect, answer was ' . $_SESSION['correctAnswer'] . ' 🙁.</h2>';
     }
 }
 
@@ -71,3 +69,7 @@ if (isset($_POST['answer'])) {
 
 
 // Show score
+if ($page === 10) {
+    echo '<h1>Quiz Over</h1>';
+    echo '<p>You correctly answered '. $_SESSION['amountCorrect']. ' out of 10 questions!</p>';
+}
