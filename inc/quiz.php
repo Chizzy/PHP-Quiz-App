@@ -35,6 +35,9 @@ $total = count($questions);
 if ($page == 11) {
     echo '<h1>Quiz Over</h1>';
     echo '<p>You correctly answered '. ($_SESSION['amountCorrect'] + 1). ' out of ' . $total . ' questions!</p>';
+    echo '<form action="index.php">';
+    echo '<input type="submit" class="btn" name="quiz" value="Restart Quiz" />';
+    echo '</form>';
 } else {
     // Show random question
     echo '<div id="quiz-box">';
