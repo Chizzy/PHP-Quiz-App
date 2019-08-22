@@ -1,13 +1,26 @@
 <?php
 // Generate random questions
-
+$questions = [];
 // Loop for required number of questions
+for ($i = 0; $i <= 9; $i++) {
+    // Get random numbers to add
+    $leftAdder = rand(1, 100);
+    $rightAdder = rand(1, 100);
 
-// Get random numbers to add
+    // Calculate correct answer
+    $correctAnswer = $leftAdder + $rightAdder;
 
-// Calculate correct answer
+    // Get incorrect answers within 10 numbers either way of correct answer
+    // Make sure it is a unique answer
+    $firstIncorrectAnswer = $correctAnswer + rand(-10, 10);
+    $secondIncorrectAnswer = $correctAnswer + rand(-10, 10);
 
-// Get incorrect answers within 10 numbers either way of correct answer
-// Make sure it is a unique answer
-
-// Add question and answer to questions array
+    // Add question and answer to questions array
+    $questions[] = [
+        'leftAdder' => $leftAdder,
+        'rightAdder' => $rightAdder,
+        'correctAnswer' => $correctAnswer,
+        'firstIncorrectAnswer' => $firstIncorrectAnswer,
+        'secondIncorrectAnswer' => $secondIncorrectAnswer
+    ];
+}

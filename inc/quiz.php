@@ -19,10 +19,11 @@ session_start();
 
 
 // Include questions
-include 'questions.php';
+include 'generate_questions.php';
 
 $page = filter_input(INPUT_GET, 'p', FILTER_SANITIZE_NUMBER_INT);
 if (empty($page)) {
+    session_destroy();
     $page = 1;
 }
 
