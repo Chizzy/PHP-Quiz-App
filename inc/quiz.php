@@ -16,7 +16,9 @@
  */
 
 session_start();
-$_SESSION['amountCorrect'] = 0;
+if (!isset($_SESSION['amountCorrect']) || $_SESSION['amountCorrect'] > 9) {
+    $_SESSION['amountCorrect'] = 0;
+} 
 
 // Include questions
 include 'generate_questions.php';
@@ -29,25 +31,31 @@ if (empty($page)) {
 }
 $total = count($questions);
 
-// Show random question
-echo '<div id="quiz-box">';
-// Show which question they are on
-echo '<p class="breadcrumbs">Question ' . $page . ' of ' . $total . ' </p>';
-echo '<p class="quiz">What is ' . $questions[$page - 1]['leftAdder'] . ' + ' . $questions[$page - 1]['rightAdder'] . '?</p>';
-echo '<form action="index.php?p=' . ($page + 1) . '" method="post">';
-echo '<input type="hidden" name="correctAnswer" value="' . $questions[$page - 1]['correctAnswer'] . '" />';
-// Shuffle answer buttons
-$answers = [
-    $questions[$page - 1]['correctAnswer'], 
-    $questions[$page - 1]['firstIncorrectAnswer'], 
-    $questions[$page - 1]['secondIncorrectAnswer']
-];
-shuffle($answers);
-echo '<input type="submit" class="btn" name="answer" value="' . $answers[0] . '" />';
-echo '<input type="submit" class="btn" name="answer" value="' . $answers[1] . '" />';
-echo '<input type="submit" class="btn" name="answer" value="' . $answers[2] . '" />';
-echo '</form>';
-echo '</div>';
+// Show score
+if ($page == 11) {
+    echo '<h1>Quiz Over</h1>';
+    echo '<p>You correctly answered '. ($_SESSION['amountCorrect'] + 1). ' out of ' . $total . ' questions!</p>';
+} else {
+    // Show random question
+    echo '<div id="quiz-box">';
+    // Show which question they are on
+    echo '<p class="breadcrumbs">Question ' . $page . ' of ' . $total . ' </p>';
+    echo '<p class="quiz">What is ' . $questions[$page - 1]['leftAdder'] . ' + ' . $questions[$page - 1]['rightAdder'] . '?</p>';
+    echo '<form action="index.php?p=' . ($page + 1) . '" method="post">';
+    echo '<input type="hidden" name="correctAnswer" value="' . $questions[$page - 1]['correctAnswer'] . '" />';
+    // Shuffle answer buttons
+    $answers = [
+        $questions[$page - 1]['correctAnswer'], 
+        $questions[$page - 1]['firstIncorrectAnswer'], 
+        $questions[$page - 1]['secondIncorrectAnswer']
+    ];
+    shuffle($answers);
+    echo '<input type="submit" class="btn" name="answer" value="' . $answers[0] . '" />';
+    echo '<input type="submit" class="btn" name="answer" value="' . $answers[1] . '" />';
+    echo '<input type="submit" class="btn" name="answer" value="' . $answers[2] . '" />';
+    echo '</form>';
+    echo '</div>';
+}
 
 // Keep track of which questions have been asked
 // Keep track of answers
@@ -67,9 +75,3 @@ if (isset($_POST['answer']) && isset($_POST['correctAnswer'])) {
 // If all questions have been asked, give option to show score
 // else give option to move to next question
 
-
-// Show score
-if ($page === 10) {
-    echo '<h1>Quiz Over</h1>';
-    echo '<p>You correctly answered '. $_SESSION['amountCorrect']. ' out of 10 questions!</p>';
-}
