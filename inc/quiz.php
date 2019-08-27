@@ -16,7 +16,7 @@
  */
 
 session_start();
-if (!isset($_SESSION['amountCorrect']) || $_SESSION['amountCorrect'] > 9) {
+if (!isset($_SESSION['amountCorrect']) || $_SESSION['amountCorrect'] > 10) {
     $_SESSION['amountCorrect'] = 0;
 } 
 
@@ -34,7 +34,7 @@ $total = count($questions);
 // Show score
 if ($page == 11) {
     echo '<h1 class="quiz">Quiz Over</h1>';
-    echo '<p>You correctly answered '. ($_SESSION['amountCorrect'] + 1). ' out of ' . $total . ' questions!</p>';
+    echo '<p>You correctly answered '. $_SESSION['amountCorrect'] . ' out of ' . $total . ' questions!</p>';
     echo '<form action="index.php">';
     echo '<input type="submit" class="btn" name="quiz" value="Restart Quiz" />';
     echo '</form>';
