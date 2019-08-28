@@ -16,7 +16,7 @@
  */
 
 session_start();
-if (!isset($_SESSION['amountCorrect']) || $_SESSION['amountCorrect'] > 10) {
+if (!isset($_SESSION['amountCorrect'])) {
     $_SESSION['amountCorrect'] = 0;
 } 
 
@@ -32,14 +32,7 @@ if (empty($page)) {
 $total = count($questions);
 
 // Show score
-if ($page == 11) {
-    echo '<h1 class="quiz">Quiz Over</h1>';
-    echo '<p>You correctly answered '. $_SESSION['amountCorrect'] . ' out of ' . $total . ' questions!</p>';
-    echo '<form action="index.php">';
-    echo '<input type="submit" class="btn" name="quiz" value="Restart Quiz" />';
-    echo '</form>';
-    echo '<style>h1, p {color: palegoldenrod;} p {font-size: 2rem;}</style>';
-} else {
+if ($page <= 10) {
     // Show random question
     echo '<div id="quiz-box">';
     // Show which question they are on
@@ -59,6 +52,18 @@ if ($page == 11) {
     echo '<input type="submit" class="btn" name="answer" value="' . $answers[2] . '" />';
     echo '</form>';
     echo '</div>';
+} else if ($page == 11) {
+    echo '<h1 class="quiz">Quiz Over</h1>';
+    echo '<form action="index.php?p=' . ($page + 1) . '" method="post">';
+    echo '<input type="submit" class="btn" name="answer" value="Check Your Grade" />';
+    echo '</form>';
+} else if ($page == 12) {
+    echo '<h1 class="quiz">Here is Your Grade 👀</h1>';
+    echo '<p>You correctly answered '. $_SESSION['amountCorrect'] . ' out of ' . $total . ' questions!</p>';
+    echo '<form action="index.php">';
+    echo '<input type="submit" class="btn" name="quiz" value="Restart Quiz" />';
+    echo '</form>';
+    echo '<style>h1, p {color: palegoldenrod;} p {font-size: 2rem;}</style>';
 }
 
 // Keep track of which questions have been asked
@@ -75,7 +80,5 @@ if (isset($_POST['answer']) && isset($_POST['correctAnswer'])) {
     }
 }
 
-
 // If all questions have been asked, give option to show score
 // else give option to move to next question
-
